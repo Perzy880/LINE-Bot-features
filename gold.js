@@ -12,11 +12,11 @@ async function getGoldPriceMessage() {
 
     const message = `📈 ราคาทองคำวันนี้ (${data.date} ${data.update_time})\n` +
                     `\n🟡 ทองคำแท่ง 96.5%\n` +
-                    `ซื้อเข้า: ${data.gold.buy.toLocaleString()} บาท\n` +
-                    `ขายออก: ${data.gold.sell.toLocaleString()} บาท\n` +
+                    `ซื้อเข้า: ${data.gold.sell.toLocaleString()} บาท\n` +
+                    `ขายออก: ${data.gold.buy.toLocaleString()} บาท\n` +
                     `\n💍 ทองรูปพรรณ 96.5%\n` +
-                    `ซื้อเข้า: ${data.gold_jewelry.buy.toLocaleString()} บาท\n` +
-                    `ขายออก: ${data.gold_jewelry.sell.toLocaleString()} บาท`;
+                    `ซื้อเข้า: ${data.gold_jewelry.sell.toLocaleString()} บาท\n` +
+                    `ขายออก: ${data.gold_jewelry.buy.toLocaleString()} บาท`;
 
     return message;
   } catch (error) {
