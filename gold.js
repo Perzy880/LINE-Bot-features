@@ -1,35 +1,28 @@
 
 const axios = require('axios');
 
-exports.handler = async (event, context, callback) => {
+/**
+ * Function to fetch gold prices and return a formatted message
+ * @returns {Promise<string>} - Formatted gold price message
+ */
+async function getGoldPriceMessage() {
   try {
     const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
     const data = response.data;
 
-    const message = 
-      `📅 วันที่: ${data.date} เวลา ${data.update_time}\n` +
-      `🏅 ราคาทองคำวันนี้\n` +
-      `ทองคำแท่ง 96.5%\n` +
-      `• รับซื้อ: ${data.gold.buy} บาท\n` +
-      `• ขายออก: ${data.gold.sell} บาท\n\n` +
-      `ทองรูปพรรณ 96.5%\n` +
-      `• รับซื้อ: ${data.gold_jewelry.buy.toFixed(2)} บาท\n` +
-      `• ขายออก: ${data.gold_jewelry.sell} บาท`;
+    const message = `📈 ราคาทองคำวันนี้ (${data.date} ${data.update_time})\n` +
+                    `\n🟡 ทองคำแท่ง 96.5%\n` +
+                    `ซื้อเข้า: ${data.gold.buy.toLocaleString()} บาท\n` +
+                    `ขายออก: ${data.gold.sell.toLocaleString()} บาท\n` +
+                    `\n💍 ทองรูปพรรณ 96.5%\n` +
+                    `ซื้อเข้า: ${data.gold_jewelry.buy.toLocaleString()} บาท\n` +
+                    `ขายออก: ${data.gold_jewelry.sell.toLocaleString()} บาท`;
 
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        type: 'text',
-        text: message
-      })
-    });
+    return message;
   } catch (error) {
-    callback(null, {
-      statusCode: 500,
-      body: JSON.stringify({
-        type: 'text',
-        text: '❌ ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้'
-      })
-    });
+    console.error('Error fetching gold price:', error.message);
+    return '❌ ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
   }
-};
+}
+
+module.exports = { getGoldPriceMessage };
