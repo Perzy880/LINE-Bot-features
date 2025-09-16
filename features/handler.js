@@ -39,8 +39,9 @@ async function getWeather(lat = 13.7563, lon = 100.5018) {
 async function getGoldPrices() {
   try {
     const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
-    const gold = response.data;
-    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${gold.gold.buy} บาท / ขายออก: ${gold.gold.sell} บาท\nทองรูปพรรณ รับซื้อ: ${gold.gold_jewelry.buy.toFixed(2)} บาท / ขายออก: ${gold.gold_jewelry.sell} บาท`;
+    const goldBar = response.data.response.price.gold_bar;
+    const goldJewelry = response.data.response.price.gold;
+    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.buy} บาท / ขายออก: ${goldBar.sell} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.buy} บาท / ขายออก: ${goldJewelry.sell} บาท`;
   } catch (error) {
     return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
   }
