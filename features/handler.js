@@ -44,15 +44,13 @@ exports.handler = async (req, res) => {
                 type: 'text',
                 text: `📅 วันที่: ${date}`,
                 size: 'sm',
-                color: '#888888',
-                align: 'center'
+                color: '#888888'
               },
               {
                 type: 'text',
                 text: `🕒 เวลาอัปเดต: ${time}`,
                 size: 'sm',
                 color: '#888888',
-                align: 'center'
               },
               {
                 type: 'separator',
