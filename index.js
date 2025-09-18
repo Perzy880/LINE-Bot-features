@@ -82,8 +82,11 @@ app.get('/upload-richmenu', async (req, res) => {
     const alreadyExists = existingMenus.some(menu => menu.name === 'Main Menu');
 
     if (alreadyExists) {
-      return res.send('Rich Menu "Main Menu" already exists. No action taken.');
-    }
+	  const existingMenu = existingMenus.find(menu => menu.name === 'Main Menu');
+	  await linkToAllUsers(existingMenu.richMenuId);
+	  return res.send(`Rich Menu "Main Menu" already exists and has been linked to all users.`);
+	}
+
 
     const richMenuId = await createRichMenu();
     await uploadImage(richMenuId);
