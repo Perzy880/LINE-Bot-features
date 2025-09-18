@@ -9,12 +9,13 @@ const config = {
 
 const client = new line.Client(config);
 
-// Main handler function
-exports.handler = async (event) => {
-  const message = event.events[0].message.text;
+// Main handler function for Express
+exports.handler = async (req, res) => {
+  const event = req.body.events[0];
+  const message = event.message.text;
 
   if (message === 'เมนู') {
-    return client.replyMessage(event.events[0].replyToken, {
+    await client.replyMessage(event.replyToken, {
       type: 'flex',
       altText: 'เมนูหลัก',
       contents: {
@@ -44,6 +45,7 @@ exports.handler = async (event) => {
         }
       }
     });
+    return res.status(200).end();
   }
 
   if (message === 'ราคาทอง') {
@@ -51,7 +53,7 @@ exports.handler = async (event) => {
       const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
       const goldData = response.data;
 
-      return client.replyMessage(event.events[0].replyToken, {
+      await client.replyMessage(event.replyToken, {
         type: 'flex',
         altText: 'ราคาทองวันนี้',
         contents: {
@@ -88,16 +90,19 @@ exports.handler = async (event) => {
           }
         }
       });
+      return res.status(200).end();
     } catch (error) {
-      return client.replyMessage(event.events[0].replyToken, {
+      await client.replyMessage(event.replyToken, {
         type: 'text',
         text: 'ขออภัย ไม่สามารถดึงข้อมูลราคาทองได้ในขณะนี้'
       });
+      return res.status(200).end();
     }
   }
 
-  return client.replyMessage(event.events[0].replyToken, {
+  await client.replyMessage(event.replyToken, {
     type: 'text',
     text: 'กรุณาพิมพ์ "เมนู" เพื่อเริ่มต้น'
   });
+  return res.status(200).end();
 };
