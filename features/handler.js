@@ -41,7 +41,7 @@ async function getGoldPrices() {
     const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
     const goldBar = response.data.response.price.gold_bar;
     const goldJewelry = response.data.response.price.gold;
-    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.buy} บาท / ขายออก: ${goldBar.sell} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.buy} บาท / ขายออก: ${goldJewelry.sell} บาท`;
+    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.sell} บาท / ขายออก: ${goldBar.buy} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.sell} บาท / ขายออก: ${goldJewelry.buy} บาท`;
   } catch (error) {
     return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
   }
