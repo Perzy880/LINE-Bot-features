@@ -36,16 +36,42 @@ async function getWeather(lat = 13.7563, lon = 100.5018) {
   }
 }
 
+//async function getGoldPrices() {
+//  try {
+//    const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
+//    const goldBar = response.data.response.price.gold_bar;
+//    const goldJewelry = response.data.response.price.gold;
+//    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.sell} บาท / ขายออก: ${goldBar.buy} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.sell} บาท / ขายออก: ${goldJewelry.buy} บาท`;
+//  } catch (error) {
+//    return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
+//  }
+//}
+
 async function getGoldPrices() {
   try {
     const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
-    const goldBar = response.data.response.price.gold_bar;
-    const goldJewelry = response.data.response.price.gold;
-    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.sell} บาท / ขายออก: ${goldBar.buy} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.sell} บาท / ขายออก: ${goldJewelry.buy} บาท`;
+    const data = response.data.response;
+    const goldBar = data.price.gold_bar;
+    const goldJewelry = data.price.gold;
+    const date = data.date;
+    const time = data.update_time;
+
+    return `📅 วันที่: ${date}
+🕒 เวลาอัปเดต: ${time}
+
+🏅 ราคาทองคำวันนี้
+🔹 ทองแท่ง
+   • ขายออก: ${goldBar.sell} บาท
+   • รับซื้อ: ${goldBar.buy} บาท
+
+🔸 ทองรูปพรรณ
+   • ขายออก: ${goldJewelry.sell} บาท
+   • รับซื้อ: ${goldJewelry.buy} บาท`;
   } catch (error) {
     return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
   }
 }
+
 
 function getMenuFlex() {
   return {
