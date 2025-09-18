@@ -35,10 +35,11 @@ exports.handler = async (req, res) => {
             contents: [
               {
                 type: 'text',
-                text: 'ราคาทองคำ',
+                text: '📊 ราคาทองคำ',
                 weight: 'bold',
                 size: 'xl',
-                align: 'center'
+                align: 'center',
+				color: '#bfa14c'
               },
               {
                 type: 'text',
