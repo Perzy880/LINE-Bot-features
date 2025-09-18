@@ -9,13 +9,12 @@ const config = {
 
 const client = new line.Client(config);
 
-// Main handler function for Express
-exports.handler = async (req, res) => {
-  const event = req.body.events[0];
-  const message = event.message.text;
+// Main handler function
+exports.handler = async (event) => {
+  const message = event.events[0].message.text;
 
   if (message === 'เมนู') {
-    await client.replyMessage(event.replyToken, {
+    return client.replyMessage(event.events[0].replyToken, {
       type: 'flex',
       altText: 'เมนูหลัก',
       contents: {
@@ -45,15 +44,14 @@ exports.handler = async (req, res) => {
         }
       }
     });
-    return res.status(200).end();
   }
 
   if (message === 'ราคาทอง') {
     try {
       const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
-      const goldData = response.data;
+      const goldData = response.data.response.price;
 
-      await client.replyMessage(event.replyToken, {
+      return client.replyMessage(event.events[0].replyToken, {
         type: 'flex',
         altText: 'ราคาทองวันนี้',
         contents: {
@@ -71,12 +69,21 @@ exports.handler = async (req, res) => {
               },
               {
                 type: 'text',
-                text: `ขายออก: ${goldData.sell} บาท`,
-                margin: 'sm'
-              },
-              {
-                type: 'text',
-                text: `รับซื้อ: ${goldData.buy} บาท`,
+                text: `ทองรูปพรรณ ขายออก: ${goldData.gold.sell} บาท`,
+            margin: 'sm'
+          },
+          {
+            type: 'text',
+            text: `ทองรูปพรรณ รับซื้อ: ${goldData.gold.buy} บาท`
+          },
+          {
+            type: 'text',
+            text: `ทองคำแท่ง ขายออก: ${goldData.gold_bar.sell} บาท`,
+            margin: 'sm'
+          },
+          {
+            type: 'text',
+            text: `ทองคำแท่ง รับซื้อ: ${goldData.gold_bar.buy} บาท`,
                 margin: 'sm'
               },
               {
@@ -90,19 +97,16 @@ exports.handler = async (req, res) => {
           }
         }
       });
-      return res.status(200).end();
     } catch (error) {
-      await client.replyMessage(event.replyToken, {
+      return client.replyMessage(event.events[0].replyToken, {
         type: 'text',
         text: 'ขออภัย ไม่สามารถดึงข้อมูลราคาทองได้ในขณะนี้'
       });
-      return res.status(200).end();
     }
   }
 
-  await client.replyMessage(event.replyToken, {
+  return client.replyMessage(event.events[0].replyToken, {
     type: 'text',
     text: 'กรุณาพิมพ์ "เมนู" เพื่อเริ่มต้น'
   });
-  return res.status(200).end();
 };
