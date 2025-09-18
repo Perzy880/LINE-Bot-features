@@ -38,19 +38,18 @@ exports.handler = async (req, res) => {
                 text: '📊 ราคาทองคำ',
                 weight: 'bold',
                 size: 'xl',
-                align: 'center',
 				color: '#bfa14c'
               },
               {
                 type: 'text',
-                text: `วันที่: ${date}`,
+                text: `📅 วันที่: ${date}`,
                 size: 'sm',
                 color: '#888888',
                 align: 'center'
               },
               {
                 type: 'text',
-                text: `เวลาอัปเดต: ${time}`,
+                text: `🕒 เวลาอัปเดต: ${time}`,
                 size: 'sm',
                 color: '#888888',
                 align: 'center'
@@ -61,24 +60,24 @@ exports.handler = async (req, res) => {
               },
               {
                 type: 'text',
-                text: 'ทองแท่ง',
+                text: '🔹 ทองแท่ง',
                 weight: 'bold',
                 size: 'md',
                 margin: 'md'
               },
               {
                 type: 'box',
-                layout: 'horizontal',
+                layout: 'vartical',
                 contents: [
                   {
                     type: 'text',
-                    text: `ขายออก: ${goldBar.sell} บาท`,
+                    text: `รับซื้อ: ${goldBar.sell} บาท`,
                     size: 'sm',
                     flex: 1
                   },
                   {
                     type: 'text',
-                    text: `รับซื้อ: ${goldBar.buy} บาท`,
+                    text: `ขายออก: ${goldBar.buy} บาท`,
                     size: 'sm',
                     flex: 1,
                     align: 'end'
@@ -87,24 +86,24 @@ exports.handler = async (req, res) => {
               },
               {
                 type: 'text',
-                text: 'ทองรูปพรรณ',
+                text: '🔸 ทองรูปพรรณ',
                 weight: 'bold',
                 size: 'md',
                 margin: 'md'
               },
               {
                 type: 'box',
-                layout: 'horizontal',
+                layout: 'vartical',
                 contents: [
                   {
                     type: 'text',
-                    text: `ขายออก: ${goldJewelry.sell} บาท`,
+                    text: `รับซื้อ: ${goldJewelry.sell} บาท`,
                     size: 'sm',
                     flex: 1
                   },
                   {
                     type: 'text',
-                    text: `รับซื้อ: ${goldJewelry.buy} บาท`,
+                    text: `ขายออก: ${goldJewelry.buy} บาท`,
                     size: 'sm',
                     flex: 1,
                     align: 'end'
