@@ -1,130 +1,5 @@
-
 const axios = require('axios');
-
 const ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
-const WEATHER_API_KEY = process.env.API_KEY;
-
-async function getOilPrices() {
-  try {
-    const response = await axios.get('https://api.chnwt.dev/thai-oil-api/latest');
-    const prices = response.data.stations.ptt;
-    return `ราคาน้ำมันวันนี้:\nเบนซิน: ${prices.benzine} บาท\nแก๊สโซฮอล์ 95: ${prices.gasohol95} บาท\nE20: ${prices.e20} บาท\nE85: ${prices.e85} บาท\nดีเซล: ${prices.diesel} บาท`;
-  } catch (error) {
-    return 'ไม่สามารถดึงข้อมูลราคาน้ำมันได้ในขณะนี้';
-  }
-}
-
-async function getWeather(lat = 13.7563, lon = 100.5018) {
-  try {
-    const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: {
-        lat,
-        lon,
-        appid: WEATHER_API_KEY,
-        units: 'metric',
-        lang: 'th'
-      }
-    });
-    const data = response.data;
-    const temp = data.main.temp;
-    const humidity = data.main.humidity;
-    const description = data.weather[0].description;
-    const location = data.name;
-    return `พยากรณ์อากาศที่ ${location}:\nอุณหภูมิ: ${temp}°C\nความชื้น: ${humidity}%\nสภาพอากาศ: ${description}`;
-  } catch (error) {
-    return 'ไม่สามารถดึงข้อมูลพยากรณ์อากาศได้ในขณะนี้';
-  }
-}
-
-//async function getGoldPrices() {
-//  try {
-//    const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
-//    const goldBar = response.data.response.price.gold_bar;
-//    const goldJewelry = response.data.response.price.gold;
-//    return `ราคาทองคำวันนี้:\nทองแท่ง รับซื้อ: ${goldBar.sell} บาท / ขายออก: ${goldBar.buy} บาท\nทองรูปพรรณ รับซื้อ: ${goldJewelry.sell} บาท / ขายออก: ${goldJewelry.buy} บาท`;
-//  } catch (error) {
-//    return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
-//  }
-//}
-
-async function getGoldPrices() {
-  try {
-    const response = await axios.get('https://api.chnwt.dev/thai-gold-api/latest');
-    const data = response.data.response;
-    const goldBar = data.price.gold_bar;
-    const goldJewelry = data.price.gold;
-    const date = data.date;
-    const time = data.update_time;
-
-    return `📅 วันที่: ${date}
-🕒 เวลาอัปเดต: ${time}
-
-🏅 ราคาทองคำวันนี้
-🔹 ทองแท่ง
-   • รับซื้อ: ${goldBar.sell} บาท
-   • ขายออก: ${goldBar.buy} บาท
-
-🔸 ทองรูปพรรณ
-   • รับซื้อ: ${goldJewelry.sell} บาท
-   • ขายออก: ${goldJewelry.buy} บาท`;
-  } catch (error) {
-    return 'ไม่สามารถดึงข้อมูลราคาทองคำได้ในขณะนี้';
-  }
-}
-
-
-function getMenuFlex() {
-  return {
-    type: 'flex',
-    altText: 'เมนูข้อมูลวันนี้',
-    contents: {
-      type: 'bubble',
-      body: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'text',
-            text: 'คุณต้องการดูข้อมูลอะไร?',
-            weight: 'bold',
-            size: 'lg',
-            margin: 'md'
-          },
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: 'ราคาน้ำมัน',
-              text: 'ราคาน้ำมัน'
-            },
-            style: 'primary',
-            margin: 'md'
-          },
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: 'พยากรณ์อากาศ',
-              text: 'อากาศวันนี้'
-            },
-            style: 'primary',
-            margin: 'md'
-          },
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: 'ราคาทองคำ',
-              text: 'ราคาทอง'
-            },
-            style: 'primary',
-            margin: 'md'
-          }
-        ]
-      }
-    }
-  };
-}
 
 module.exports = async function (req, res) {
   const events = req.body.events;
@@ -139,26 +14,16 @@ module.exports = async function (req, res) {
         const userMessage = msg.text.toLowerCase();
         let replyText = '';
 
-        if (userMessage.includes('เมนู')) {
-          messages.push(getMenuFlex());
-        } else if (userMessage.includes('ราคาน้ำมัน')) {
-          replyText = await getOilPrices();
-          messages.push({ type: 'text', text: replyText });
-        } else if (userMessage.includes('อากาศ')) {
-          replyText = await getWeather();
-          messages.push({ type: 'text', text: replyText });
-        } else if (userMessage.includes('ราคาทอง')) {
-          replyText = await getGoldPrices();
-          messages.push({ type: 'text', text: replyText });
+        if (userMessage.includes('เมนูวันนี้')) {
+          messages.push({
+            type: 'flex',
+            altText: 'ข้อมูลวันนี้: ราคาทองคำ ราคาน้ำมัน และพยากรณ์อากาศ',
+            contents: {"type": "flex", "altText": "ข้อมูลวันนี้: ราคาทองคำ ราคาน้ำมัน และพยากรณ์อากาศ", "contents": {"type": "carousel", "contents": [{"type": "bubble", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": "📊 ราคาทองคำ", "weight": "bold", "size": "lg", "color": "#bfa14c"}]}, "body": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [{"type": "text", "text": "📅 วันที่: 16 กันยายน 2568", "size": "sm"}, {"type": "text", "text": "🕒 เวลาอัปเดต: เวลา 14:39 น.", "size": "sm"}, {"type": "separator"}, {"type": "text", "text": "🔹 ทองแท่ง", "weight": "bold"}, {"type": "text", "text": "• ขายออก: 55,250.00 บาท"}, {"type": "text", "text": "• รับซื้อ: 55,350.00 บาท"}, {"type": "text", "text": "🔸 ทองรูปพรรณ", "weight": "bold", "margin": "md"}, {"type": "text", "text": "• ขายออก: 54,151.52 บาท"}, {"type": "text", "text": "• รับซื้อ: 56,150.00 บาท"}]}}, {"type": "bubble", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": "⛽ ราคาน้ำมัน", "weight": "bold", "size": "lg", "color": "#00bfa5"}]}, "body": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [{"type": "text", "text": "เบนซิน: 41.24 บาท/ลิตร"}, {"type": "text", "text": "แก๊สโซฮอล์ 95: 32.95 บาท/ลิตร"}, {"type": "text", "text": "E20: 30.74 บาท/ลิตร"}, {"type": "text", "text": "E85: 28.69 บาท/ลิตร"}, {"type": "text", "text": "แก๊สโซฮอล์ 91: 32.58 บาท/ลิตร"}, {"type": "text", "text": "ดีเซล B7: 31.94 บาท/ลิตร"}, {"type": "text", "text": "ดีเซลพรีเมียม: 43.94 บาท/ลิตร"}, {"type": "text", "text": "NGV: 17.08 บาท/กิโลกรัม"}]}}, {"type": "bubble", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": "🌤 พยากรณ์อากาศ", "weight": "bold", "size": "lg", "color": "#2196f3"}]}, "body": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [{"type": "text", "text": "📍 กรุงเทพฯ"}, {"type": "text", "text": "🌡 อุณหภูมิ: 32°C"}, {"type": "text", "text": "💧 ความชื้น: 70%"}, {"type": "text", "text": "🌥 สภาพอากาศ: เมฆบางส่วน"}]}}]}}
+          });
         } else {
           replyText = `คุณพิมพ์ว่า: ${msg.text}`;
           messages.push({ type: 'text', text: replyText });
         }
-      } else if (msg.type === 'location') {
-        const lat = msg.latitude;
-        const lon = msg.longitude;
-        const text = await getWeather(lat, lon);
-        messages.push({ type: 'text', text });
       }
     }
 
